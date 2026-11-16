@@ -91,12 +91,16 @@ class App(tk.Tk):
         self.tree.configure(yscrollcommand=scroll.set)
         self.tree.pack(side="left", fill="both", expand=True)
         scroll.pack(side="right", fill="y")
+        # Double-click a row to pause or resume it, as in IDM.
+        self.tree.bind("<Double-1>", self._toggle_selected)
 
         bottom = ttk.Frame(self, padding=10)
         bottom.pack(fill="x")
         buttons = (
             ("Resume", self.resume_selected),
             ("Pause", self.pause_selected),
+            ("Resume all", self.resume_all),
+            ("Pause all", self.pause_all),
             ("Remove", self.remove_selected),
             ("Open folder", self.open_folder_selected),
             ("Copy link", self.copy_link_selected),
@@ -162,6 +166,26 @@ class App(tk.Tk):
         if task:
             task.pause()
             self.status_var.set("Pausing...")
+
+    def _toggle_selected(self, _event=None) -> None:
+        task = self._selected_task()
+        if task is None or task.state == "completed":
+            return
+        if task.is_active():
+            task.pause()
+        else:
+            task.start()
+
+    def resume_all(self) -> None:
+        for task in self.manager.all():
+            if task.state != "completed":
+                task.start()
+        self.status_var.set("Resuming all downloads...")
+
+    def pause_all(self) -> None:
+        for task in self.manager.all():
+            task.pause()
+        self.status_var.set("Pausing all downloads...")
 
     def remove_selected(self) -> None:
         task = self._selected_task()

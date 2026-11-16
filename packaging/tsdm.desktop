@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=tsdm
+GenericName=Download Manager
+Comment=Segmented, resumable download manager
+Exec=tsdm %u
+Terminal=false
+Categories=Network;FileTransfer;
+StartupNotify=true

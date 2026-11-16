@@ -20,6 +20,35 @@ connections, and can pause and resume downloads, even after the app restarts.
 - **Command line** mode for quick downloads in a terminal.
 - **Standard library only**: no `pip install` needed.
 
+## Install a prebuilt program
+
+Every push builds a single-file Linux program on GitHub Actions. Tagged
+versions (for example `v1.0.0`) are published under **Releases**.
+
+```bash
+tar -xzf tsdm-linux-x86_64.tar.gz
+chmod +x tsdm
+./tsdm            # opens the window
+./tsdm URL -o ~/Downloads
+```
+
+To add it to your application menu, copy `tsdm` to `~/.local/bin/` and
+`tsdm.desktop` to `~/.local/share/applications/`.
+
+## Build the program yourself
+
+```bash
+python3 -m pip install pyinstaller
+python3 -m PyInstaller --onefile --name tsdm tsdm_app.py   # output: dist/tsdm
+```
+
+The CI workflow is `.github/workflows/build.yml`. It runs the tests, builds
+the executable, and attaches it to a release when you push a `v*` tag:
+
+```bash
+git tag v1.0.0 && git push origin v1.0.0
+```
+
 ## Requirements
 
 - Python 3.8 or newer
